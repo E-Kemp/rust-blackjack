@@ -1,32 +1,47 @@
-use strum_macros::EnumIter;
+use colored::Colorize;
 use std::fmt;
+use strum_macros::EnumIter;
 
 #[derive(Clone)]
 pub struct Card {
-  pub suit: Suit,
-  pub value: Value,
+    pub suit: Suit,
+    pub value: Value,
 }
 
 impl Card {
-  pub fn get_card_val(&self) -> u32 {
-    return match self.value {
-      Value::KING | Value::QUEEN | Value::JACK | Value::TEN => 10,
-      Value::NINE => 9,
-      Value::EIGHT => 8,
-      Value::SEVEN => 7,
-      Value::SIX => 6,
-      Value::FIVE => 5,
-      Value::FOUR => 4,
-      Value::THREE => 3,
-      Value::TWO => 2,
-      Value::ACE => 1
+    pub fn get_card_val(&self) -> u32 {
+        return match self.value {
+            Value::KING | Value::QUEEN | Value::JACK | Value::TEN => 10,
+            Value::NINE => 9,
+            Value::EIGHT => 8,
+            Value::SEVEN => 7,
+            Value::SIX => 6,
+            Value::FIVE => 5,
+            Value::FOUR => 4,
+            Value::THREE => 3,
+            Value::TWO => 2,
+            Value::ACE => 1,
+        };
     }
-  }
 }
 
 impl fmt::Display for Card {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        write!(fmt, "[{}{}]", self.value.to_string(), self.suit.to_string())
+        write!(
+            fmt,
+            "{}{}",
+            "[".black().on_white(),
+            self.value.to_string().black().on_white()
+        )
+        .expect("Value is invalid");
+        match self.suit {
+            Suit::CLUB | Suit::SPADE => write!(fmt, "{}", self.suit.to_string().black().on_white())
+                .expect("Value is invalid"),
+            Suit::HEART | Suit::DIAMOND => {
+                write!(fmt, "{}", self.suit.to_string().red().on_white()).expect("Value is invalid")
+            }
+        }
+        write!(fmt, "{}", "]".black().on_white())
             .expect("Something went wrong");
         Ok(())
     }
@@ -34,10 +49,10 @@ impl fmt::Display for Card {
 
 #[derive(Clone, Copy, Debug, EnumIter)]
 pub enum Suit {
-  CLUB,
-  DIAMOND,
-  HEART,
-  SPADE
+    CLUB,
+    DIAMOND,
+    HEART,
+    SPADE,
 }
 
 impl fmt::Display for Suit {
@@ -46,26 +61,26 @@ impl fmt::Display for Suit {
             Suit::CLUB => write!(f, "♣"),
             Suit::DIAMOND => write!(f, "♦"),
             Suit::HEART => write!(f, "♥"),
-            Suit::SPADE => write!(f, "♠")
+            Suit::SPADE => write!(f, "♠"),
         }
     }
 }
 
 #[derive(Clone, Copy, Debug, EnumIter, PartialEq)]
 pub enum Value {
-  ACE,
-  KING,
-  QUEEN,
-  JACK,
-  TEN,
-  NINE,
-  EIGHT,
-  SEVEN,
-  SIX,
-  FIVE,
-  FOUR,
-  THREE,
-  TWO
+    ACE,
+    KING,
+    QUEEN,
+    JACK,
+    TEN,
+    NINE,
+    EIGHT,
+    SEVEN,
+    SIX,
+    FIVE,
+    FOUR,
+    THREE,
+    TWO,
 }
 
 impl fmt::Display for Value {
@@ -83,7 +98,8 @@ impl fmt::Display for Value {
             Value::FIVE => write!(f, "5"),
             Value::FOUR => write!(f, "4"),
             Value::THREE => write!(f, "3"),
-            Value::TWO => write!(f, "2")
+            Value::TWO => write!(f, "2"),
         }
     }
 }
+
